@@ -174,21 +174,27 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle className="flex items-center gap-2 text-xl">
-            <div className="p-2 bg-primary/10 rounded-lg">
-              <UserPlus className="w-5 h-5 text-primary" />
+      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto bg-gradient-to-b from-card to-muted/20">
+        <DialogHeader className="pb-4">
+          <DialogTitle className="flex items-center gap-3 text-xl">
+            <div className="p-2.5 bg-gradient-to-br from-primary to-primary/80 rounded-xl shadow-lg">
+              <UserPlus className="w-5 h-5 text-primary-foreground" />
             </div>
-            Register New Patient
+            <div>
+              <span className="font-semibold">Register New Patient</span>
+              <p className="text-sm font-normal text-muted-foreground mt-0.5">
+                Fill in the patient details below
+              </p>
+            </div>
           </DialogTitle>
         </DialogHeader>
 
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
             {/* Personal Information */}
-            <div className="space-y-4">
-              <h3 className="font-semibold text-foreground border-b border-border pb-2">
+            <div className="space-y-4 bg-card/50 rounded-xl p-5 border border-border/50 shadow-sm">
+              <h3 className="font-semibold text-foreground flex items-center gap-2">
+                <div className="w-1.5 h-5 bg-primary rounded-full" />
                 Personal Information
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -197,9 +203,9 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
                   name="firstName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>First Name *</FormLabel>
+                      <FormLabel className="text-muted-foreground">First Name *</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter first name" {...field} />
+                        <Input placeholder="Enter first name" className="h-11 rounded-lg" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -210,9 +216,9 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
                   name="lastName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Last Name *</FormLabel>
+                      <FormLabel className="text-muted-foreground">Last Name *</FormLabel>
                       <FormControl>
-                        <Input placeholder="Enter last name" {...field} />
+                        <Input placeholder="Enter last name" className="h-11 rounded-lg" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -223,9 +229,9 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
                   name="dateOfBirth"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Date of Birth *</FormLabel>
+                      <FormLabel className="text-muted-foreground">Date of Birth *</FormLabel>
                       <FormControl>
-                        <Input type="date" {...field} />
+                        <Input type="date" className="h-11 rounded-lg" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -236,10 +242,10 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
                   name="gender"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Gender *</FormLabel>
+                      <FormLabel className="text-muted-foreground">Gender *</FormLabel>
                       <Select onValueChange={field.onChange} value={field.value}>
                         <FormControl>
-                          <SelectTrigger>
+                          <SelectTrigger className="h-11 rounded-lg">
                             <SelectValue placeholder="Select gender" />
                           </SelectTrigger>
                         </FormControl>
@@ -258,11 +264,12 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
                   name="email"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Email</FormLabel>
+                      <FormLabel className="text-muted-foreground">Email</FormLabel>
                       <FormControl>
                         <Input
                           type="email"
                           placeholder="patient@email.com"
+                          className="h-11 rounded-lg"
                           {...field}
                         />
                       </FormControl>
@@ -275,9 +282,9 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
                   name="phoneNumber"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Phone Number *</FormLabel>
+                      <FormLabel className="text-muted-foreground">Phone Number *</FormLabel>
                       <FormControl>
-                        <Input placeholder="(555) 123-4567" {...field} />
+                        <Input placeholder="(555) 123-4567" className="h-11 rounded-lg" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -287,8 +294,9 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
             </div>
 
             {/* Address Information */}
-            <div className="space-y-4">
-              <h3 className="font-semibold text-foreground border-b border-border pb-2">
+            <div className="space-y-4 bg-card/50 rounded-xl p-5 border border-border/50 shadow-sm">
+              <h3 className="font-semibold text-foreground flex items-center gap-2">
+                <div className="w-1.5 h-5 bg-primary rounded-full" />
                 Address Information
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -297,9 +305,9 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
                   name="address"
                   render={({ field }) => (
                     <FormItem className="md:col-span-2">
-                      <FormLabel>Street Address</FormLabel>
+                      <FormLabel className="text-muted-foreground">Street Address</FormLabel>
                       <FormControl>
-                        <Input placeholder="123 Main Street" {...field} />
+                        <Input placeholder="123 Main Street" className="h-11 rounded-lg" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -310,9 +318,9 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
                   name="city"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>City</FormLabel>
+                      <FormLabel className="text-muted-foreground">City</FormLabel>
                       <FormControl>
-                        <Input placeholder="Philadelphia" {...field} />
+                        <Input placeholder="Philadelphia" className="h-11 rounded-lg" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -324,9 +332,9 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
                     name="state"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>State</FormLabel>
+                        <FormLabel className="text-muted-foreground">State</FormLabel>
                         <FormControl>
-                          <Input placeholder="PA" {...field} />
+                          <Input placeholder="PA" className="h-11 rounded-lg" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -337,9 +345,9 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
                     name="zipCode"
                     render={({ field }) => (
                       <FormItem>
-                        <FormLabel>Zip Code</FormLabel>
+                        <FormLabel className="text-muted-foreground">Zip Code</FormLabel>
                         <FormControl>
-                          <Input placeholder="19120" {...field} />
+                          <Input placeholder="19120" className="h-11 rounded-lg" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -350,8 +358,9 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
             </div>
 
             {/* Insurance Information */}
-            <div className="space-y-4">
-              <h3 className="font-semibold text-foreground border-b border-border pb-2">
+            <div className="space-y-4 bg-card/50 rounded-xl p-5 border border-border/50 shadow-sm">
+              <h3 className="font-semibold text-foreground flex items-center gap-2">
+                <div className="w-1.5 h-5 bg-primary rounded-full" />
                 Insurance Information
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
@@ -360,9 +369,9 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
                   name="insuranceProvider"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Insurance Provider</FormLabel>
+                      <FormLabel className="text-muted-foreground">Insurance Provider</FormLabel>
                       <FormControl>
-                        <Input placeholder="Delta Dental" {...field} />
+                        <Input placeholder="Delta Dental" className="h-11 rounded-lg" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -373,9 +382,9 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
                   name="insuranceId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Insurance ID</FormLabel>
+                      <FormLabel className="text-muted-foreground">Insurance ID</FormLabel>
                       <FormControl>
-                        <Input placeholder="INS-12345" {...field} />
+                        <Input placeholder="INS-12345" className="h-11 rounded-lg" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -386,9 +395,9 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
                   name="memberId"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Member ID</FormLabel>
+                      <FormLabel className="text-muted-foreground">Member ID</FormLabel>
                       <FormControl>
-                        <Input placeholder="MEM-67890" {...field} />
+                        <Input placeholder="MEM-67890" className="h-11 rounded-lg" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -398,8 +407,9 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
             </div>
 
             {/* Emergency Contact */}
-            <div className="space-y-4">
-              <h3 className="font-semibold text-foreground border-b border-border pb-2">
+            <div className="space-y-4 bg-card/50 rounded-xl p-5 border border-border/50 shadow-sm">
+              <h3 className="font-semibold text-foreground flex items-center gap-2">
+                <div className="w-1.5 h-5 bg-destructive rounded-full" />
                 Emergency Contact
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -408,9 +418,9 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
                   name="emergencyContactName"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Contact Name</FormLabel>
+                      <FormLabel className="text-muted-foreground">Contact Name</FormLabel>
                       <FormControl>
-                        <Input placeholder="Jane Doe" {...field} />
+                        <Input placeholder="Jane Doe" className="h-11 rounded-lg" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -421,9 +431,9 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
                   name="emergencyContactPhone"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Contact Phone</FormLabel>
+                      <FormLabel className="text-muted-foreground">Contact Phone</FormLabel>
                       <FormControl>
-                        <Input placeholder="(555) 987-6543" {...field} />
+                        <Input placeholder="(555) 987-6543" className="h-11 rounded-lg" {...field} />
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -433,8 +443,9 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
             </div>
 
             {/* Additional Notes */}
-            <div className="space-y-4">
-              <h3 className="font-semibold text-foreground border-b border-border pb-2">
+            <div className="space-y-4 bg-card/50 rounded-xl p-5 border border-border/50 shadow-sm">
+              <h3 className="font-semibold text-foreground flex items-center gap-2">
+                <div className="w-1.5 h-5 bg-muted-foreground rounded-full" />
                 Additional Notes
               </h3>
               <FormField
@@ -442,11 +453,11 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
                 name="notes"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Notes</FormLabel>
+                    <FormLabel className="text-muted-foreground">Notes</FormLabel>
                     <FormControl>
                       <Textarea
                         placeholder="Any additional information about the patient..."
-                        className="min-h-[80px]"
+                        className="min-h-[100px] rounded-lg resize-none"
                         {...field}
                       />
                     </FormControl>
@@ -463,10 +474,15 @@ export function AddPatientModal({ open, onOpenChange }: AddPatientModalProps) {
                 variant="outline"
                 onClick={() => onOpenChange(false)}
                 disabled={isSubmitting}
+                className="h-11 px-6 rounded-lg"
               >
                 Cancel
               </Button>
-              <Button type="submit" disabled={isSubmitting}>
+              <Button 
+                type="submit" 
+                disabled={isSubmitting}
+                className="h-11 px-6 rounded-lg bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary shadow-lg"
+              >
                 {isSubmitting ? (
                   <>
                     <Loader2 className="w-4 h-4 mr-2 animate-spin" />
