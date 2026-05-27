@@ -20,7 +20,7 @@ import {
 import { cn } from "@/lib/utils";
 
 const menuItems = [
-  { title: "Dashboard", icon: LayoutDashboard, url: "/" },
+  { title: "Dashboard", icon: LayoutDashboard, url: "/dashboard" },
   { title: "Practice Setup", icon: Settings, url: "/practice-setup" },
   { title: "Front Office", icon: Building2, url: "/front-office" },
   { title: "Patient Waiting Area", icon: Users, url: "/patient-waiting" },
