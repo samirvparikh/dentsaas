@@ -22,7 +22,7 @@ import logoAsset from "@/assets/dentalens-logo.png.asset.json";
 
 const menuItems = [
   { title: "Dashboard", icon: LayoutDashboard, url: "/dashboard" },
-  { title: "Practice Setup", icon: Settings, url: "/practice-setup" },
+  { title: "Setting", icon: Settings, url: "/settings" },
   { title: "Appointment", icon: Building2, url: "/appointment/book" },
   { title: "Patient Waiting Area", icon: Users, url: "/patient-waiting" },
   { title: "Corporate/Central Office", icon: Briefcase, url: "/corporate" },
