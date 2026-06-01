@@ -23,10 +23,10 @@ import logoAsset from "@/assets/dentalens-logo.png.asset.json";
 const menuItems = [
   { title: "Dashboard", icon: LayoutDashboard, url: "/dashboard" },
   { title: "Practice Setup", icon: Settings, url: "/practice-setup" },
-  { title: "Front Office", icon: Building2, url: "/front-office" },
+  { title: "Appointment", icon: Building2, url: "/appointment/book" },
   { title: "Patient Waiting Area", icon: Users, url: "/patient-waiting" },
   { title: "Corporate/Central Office", icon: Briefcase, url: "/corporate" },
-  { title: "Back Office", icon: Clipboard, url: "/back-office" },
+  { title: "Accounts", icon: Clipboard, url: "/patient/billing" },
   { title: "Admin", icon: Shield, url: "/admin" },
   { title: "Group Appts", icon: UsersRound, url: "/group-appts" },
   { title: "Group Eligibility", icon: CheckSquare, url: "/group-eligibility" },

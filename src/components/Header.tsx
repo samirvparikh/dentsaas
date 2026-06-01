@@ -1,4 +1,5 @@
 import { Phone, ChevronDown, User } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -6,8 +7,15 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+import { toast } from "@/hooks/use-toast";
 
 export function Header() {
+  const navigate = useNavigate();
+  const handleSignOut = () => {
+    localStorage.removeItem("dentsaas_user");
+    toast({ title: "Signed out", description: "You have been signed out." });
+    navigate("/login");
+  };
   return (
     <header className="h-14 bg-card border-b border-border flex items-center justify-between px-6">
       {/* Office Address */}
@@ -44,7 +52,7 @@ export function Header() {
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem>Profile Settings</DropdownMenuItem>
             <DropdownMenuItem>Account</DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive">Sign Out</DropdownMenuItem>
+            <DropdownMenuItem className="text-destructive" onClick={handleSignOut}>Sign Out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
