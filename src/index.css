@@ -154,6 +154,71 @@
     --action-icon: 38 92% 50%;
   }
 
+  /* ====== DENTALENS THEME (Teal + Rose Gold) ====== */
+  [data-theme="dentalens"] {
+    --background: 180 25% 97%;
+    --foreground: 185 40% 12%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 185 40% 12%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 185 40% 12%;
+
+    --primary: 180 55% 28%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 25 50% 92%;
+    --secondary-foreground: 22 45% 35%;
+
+    --muted: 180 20% 95%;
+    --muted-foreground: 185 15% 40%;
+
+    --accent: 22 60% 88%;
+    --accent-foreground: 22 55% 30%;
+
+    --ring: 180 55% 28%;
+
+    --border: 180 20% 88%;
+    --input: 180 20% 92%;
+
+    --sidebar-background: 185 55% 14%;
+    --sidebar-foreground: 25 30% 88%;
+    --sidebar-primary: 25 65% 70%;
+    --sidebar-primary-foreground: 185 55% 14%;
+    --sidebar-accent: 185 50% 20%;
+    --sidebar-accent-foreground: 25 60% 80%;
+    --sidebar-border: 185 45% 22%;
+    --sidebar-ring: 25 65% 65%;
+    --sidebar-muted: 25 25% 70%;
+    --section-header: 185 55% 14%;
+    --section-header-foreground: 0 0% 100%;
+    --action-icon: 22 65% 55%;
+  }
+
+  .dark[data-theme="dentalens"],
+  .dark [data-theme="dentalens"] {
+    --primary: 180 55% 45%;
+    --primary-foreground: 0 0% 100%;
+    --secondary: 25 30% 20%;
+    --secondary-foreground: 25 55% 75%;
+    --accent: 25 35% 25%;
+    --accent-foreground: 25 60% 80%;
+    --ring: 180 55% 45%;
+    --sidebar-background: 185 55% 10%;
+    --sidebar-foreground: 25 25% 85%;
+    --sidebar-primary: 25 60% 65%;
+    --sidebar-primary-foreground: 185 55% 10%;
+    --sidebar-accent: 185 50% 16%;
+    --sidebar-accent-foreground: 25 55% 80%;
+    --sidebar-border: 185 45% 18%;
+    --sidebar-ring: 25 60% 60%;
+    --sidebar-muted: 25 20% 55%;
+    --section-header: 185 55% 12%;
+    --section-header-foreground: 0 0% 95%;
+    --action-icon: 22 65% 60%;
+  }
+
   /* ====== DARK MODE ====== */
   .dark {
     --background: 220 20% 10%;

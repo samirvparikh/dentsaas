@@ -18,6 +18,7 @@ import {
   ChevronLeft,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import logoAsset from "@/assets/dentalens-logo.png.asset.json";
 
 const menuItems = [
   { title: "Dashboard", icon: LayoutDashboard, url: "/dashboard" },
@@ -60,9 +61,12 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
           {collapsed ? <Menu className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
         </button>
         {!collapsed && (
-          <span className="ml-3 font-bold text-lg text-sidebar-primary tracking-tight">
-            DENT<span className="font-normal text-sidebar-muted">SAAS</span>
-          </span>
+          <div className="ml-3 flex items-center gap-2">
+            <img src={logoAsset.url} alt="DentaLens" className="h-8 w-8 object-contain" />
+            <span className="font-bold text-base text-sidebar-primary tracking-tight">
+              DENTA<span className="font-normal text-sidebar-muted">LENS</span>
+            </span>
+          </div>
         )}
       </div>
 

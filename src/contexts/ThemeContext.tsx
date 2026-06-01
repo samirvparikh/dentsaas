@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-export type ColorTheme = "teal" | "blue" | "purple" | "rose" | "amber";
+export type ColorTheme = "teal" | "blue" | "purple" | "rose" | "amber" | "dentalens";
 export type Mode = "light" | "dark";
 
 interface ThemeContextType {
@@ -14,6 +14,7 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 export const colorThemes: { id: ColorTheme; name: string; preview: string }[] = [
+  { id: "dentalens", name: "DentaLens", preview: "bg-[hsl(180,55%,30%)]" },
   { id: "teal", name: "Teal", preview: "bg-[hsl(174,62%,35%)]" },
   { id: "blue", name: "Ocean Blue", preview: "bg-[hsl(210,80%,50%)]" },
   { id: "purple", name: "Royal Purple", preview: "bg-[hsl(270,70%,50%)]" },
@@ -24,7 +25,7 @@ export const colorThemes: { id: ColorTheme; name: string; preview: string }[] = 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const [colorTheme, setColorTheme] = useState<ColorTheme>(() => {
     const saved = localStorage.getItem("colorTheme");
-    return (saved as ColorTheme) || "teal";
+    return (saved as ColorTheme) || "dentalens";
   });
   
   const [mode, setMode] = useState<Mode>(() => {
