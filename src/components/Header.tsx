@@ -52,7 +52,7 @@ export function Header() {
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem>Profile Settings</DropdownMenuItem>
             <DropdownMenuItem>Account</DropdownMenuItem>
-            <DropdownMenuItem className="text-destructive">Sign Out</DropdownMenuItem>
+            <DropdownMenuItem className="text-destructive" onClick={handleSignOut}>Sign Out</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
