@@ -3,13 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { Lock, Mail, Eye, EyeOff, Stethoscope } from "lucide-react";
+import { Lock, Mail, Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { toast } from "@/hooks/use-toast";
 import { ThemeSwitcher } from "@/components/ThemeSwitcher";
+import logoAsset from "@/assets/dentalens-logo.png.asset.json";
 
 const loginSchema = z.object({
   email: z.string().email("Please enter a valid email"),
@@ -47,25 +48,25 @@ export default function Login() {
           <div className="absolute bottom-0 right-0 w-[28rem] h-[28rem] rounded-full bg-white/20 blur-3xl" />
         </div>
         <div className="relative z-10 flex flex-col justify-between p-12 text-primary-foreground">
-          <div className="flex items-center gap-2">
-            <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur flex items-center justify-center">
-              <Stethoscope className="w-5 h-5" />
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-xl bg-white/95 backdrop-blur flex items-center justify-center p-1.5">
+              <img src={logoAsset.url} alt="DentaLens" className="w-full h-full object-contain" />
             </div>
             <span className="font-bold text-2xl tracking-tight">
-              DENT<span className="font-light opacity-80">SAAS</span>
+              DENTA<span className="font-light opacity-80">LENS</span>
             </span>
           </div>
           <div className="space-y-4">
             <h1 className="text-4xl font-bold leading-tight">
-              Manage your dental practice with ease.
+              Advanced dental imaging & diagnostics.
             </h1>
             <p className="text-lg opacity-90 max-w-md">
-              Patient records, appointments, claims and billing — all in one
-              modern, secure platform.
+              Patient records, imaging, appointments, claims and billing — all
+              in one modern, secure platform.
             </p>
           </div>
           <div className="text-sm opacity-70">
-            © {new Date().getFullYear()} DentSaaS. All rights reserved.
+            © {new Date().getFullYear()} DentaLens. All rights reserved.
           </div>
         </div>
       </div>
@@ -78,11 +79,9 @@ export default function Login() {
         <div className="flex-1 flex items-center justify-center px-6 pb-12">
           <div className="w-full max-w-md space-y-8">
             <div className="lg:hidden flex items-center gap-2 justify-center">
-              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
-                <Stethoscope className="w-5 h-5 text-primary-foreground" />
-              </div>
+              <img src={logoAsset.url} alt="DentaLens" className="h-12 w-12 object-contain" />
               <span className="font-bold text-2xl text-foreground tracking-tight">
-                DENT<span className="font-light text-muted-foreground">SAAS</span>
+                DENTA<span className="font-light text-muted-foreground">LENS</span>
               </span>
             </div>
 

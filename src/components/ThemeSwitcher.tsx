@@ -12,6 +12,7 @@ import { useTheme, colorThemes, ColorTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
 
 const themeColors: Record<ColorTheme, string> = {
+  dentalens: "bg-[hsl(180,55%,30%)]",
   teal: "bg-[hsl(174,62%,35%)]",
   blue: "bg-[hsl(210,80%,50%)]",
   purple: "bg-[hsl(270,70%,50%)]",
