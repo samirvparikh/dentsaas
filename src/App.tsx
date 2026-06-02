@@ -12,6 +12,11 @@ import Appointment from "./pages/Appointment";
 import OneScreen from "./pages/OneScreen";
 import PatientBilling from "./pages/PatientBilling";
 import Settings from "./pages/Settings";
+import TreatmentPlan from "./pages/TreatmentPlan";
+import Chart from "./pages/Chart";
+import Imaging from "./pages/Imaging";
+import ElectronicForm from "./pages/ElectronicForm";
+import Report from "./pages/Report";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
