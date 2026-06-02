@@ -12,6 +12,11 @@ import Appointment from "./pages/Appointment";
 import OneScreen from "./pages/OneScreen";
 import PatientBilling from "./pages/PatientBilling";
 import Settings from "./pages/Settings";
+import TreatmentPlan from "./pages/TreatmentPlan";
+import Chart from "./pages/Chart";
+import Imaging from "./pages/Imaging";
+import ElectronicForm from "./pages/ElectronicForm";
+import Report from "./pages/Report";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -31,6 +36,11 @@ const App = () => (
             <Route path="/onescreen" element={<OneScreen />} />
             <Route path="/patient/billing" element={<PatientBilling />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/treatment-plan" element={<TreatmentPlan />} />
+            <Route path="/chart" element={<Chart />} />
+            <Route path="/imaging" element={<Imaging />} />
+            <Route path="/electronic-form" element={<ElectronicForm />} />
+            <Route path="/report" element={<Report />} />
             <Route path="/" element={<Index />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
