@@ -36,6 +36,11 @@ const App = () => (
             <Route path="/onescreen" element={<OneScreen />} />
             <Route path="/patient/billing" element={<PatientBilling />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/treatment-plan" element={<TreatmentPlan />} />
+            <Route path="/chart" element={<Chart />} />
+            <Route path="/imaging" element={<Imaging />} />
+            <Route path="/electronic-form" element={<ElectronicForm />} />
+            <Route path="/report" element={<Report />} />
             <Route path="/" element={<Index />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
