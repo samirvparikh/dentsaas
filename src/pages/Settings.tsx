@@ -99,9 +99,9 @@ export default function Settings() {
       />
       <div className="flex-1 flex flex-col overflow-hidden">
         <Header />
-        <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Settings" }]} />
 
         <main className="flex-1 overflow-y-auto p-6">
+          <Breadcrumb items={[{ label: "Home", href: "/" }, { label: "Settings" }]} />
           <div className="max-w-6xl mx-auto space-y-6">
             <div className="flex items-center justify-between">
               <div>
