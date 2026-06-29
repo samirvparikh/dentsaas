@@ -92,7 +92,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="flex h-screen bg-background overflow-hidden">
+    <div className="min-h-screen flex w-full bg-background overflow-hidden">
       <AppSidebar
         collapsed={sidebarCollapsed}
         onToggle={() => setSidebarCollapsed((s) => !s)}
