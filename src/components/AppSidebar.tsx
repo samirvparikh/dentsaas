@@ -39,7 +39,7 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
   return (
     <aside
       className={cn(
-        "min-h-screen bg-sidebar flex flex-col transition-all duration-300 ease-in-out flex-shrink-0",
+        "h-full min-h-screen bg-sidebar flex flex-col transition-all duration-300 ease-in-out flex-shrink-0",
         collapsed ? "w-16" : "w-56"
       )}
     >
