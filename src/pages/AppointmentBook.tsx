@@ -33,6 +33,11 @@ import {
   ChevronRight,
   Printer,
   Eye,
+  LayoutGrid,
+  List as ListIcon,
+  Search,
+  UserPlus,
+  CalendarPlus,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "@/hooks/use-toast";
@@ -151,6 +156,9 @@ export default function AppointmentBook() {
 
   const [manageOpen, setManageOpen] = useState(false);
   const [blockOpen, setBlockOpen] = useState(false);
+  const [view, setView] = useState<"block" | "list">("block");
+  const [apptOpen, setApptOpen] = useState(false);
+  const [apptPrefill, setApptPrefill] = useState<{ sideId?: string; start?: string; end?: string; existing?: Appointment } | null>(null);
 
   const startM = toMin(startTime);
   const endM = toMin(endTime);
@@ -196,6 +204,18 @@ export default function AppointmentBook() {
     toast({ title: "Time blocked", description: `${b.start} – ${b.end}` });
   };
   const removeBlock = (id: string) => setBlocks((p) => p.filter((b) => b.id !== id));
+
+  const openNewAppt = (prefill: { sideId?: string; start?: string; end?: string; existing?: Appointment } | null = null) => {
+    setApptPrefill(prefill);
+    setApptOpen(true);
+  };
+  const saveAppt = (a: Omit<Appointment, "id"> & { id?: string }) => {
+    setAppointments((p) => {
+      if (a.id) return p.map((x) => (x.id === a.id ? { ...(a as Appointment) } : x));
+      return [...p, { ...a, id: `a${Date.now()}` } as Appointment];
+    });
+    toast({ title: a.id ? "Appointment updated" : "Appointment saved", description: `${a.patient} · ${a.start}–${a.end}` });
+  };
 
   /* ────────────────────────── */
   return (
@@ -259,6 +279,32 @@ export default function AppointmentBook() {
               </div>
 
               <div className="ml-auto flex items-center gap-2">
+                {/* View toggle */}
+                <div className="inline-flex rounded-md border border-border overflow-hidden">
+                  <button
+                    type="button"
+                    onClick={() => setView("block")}
+                    className={cn(
+                      "px-3 h-9 text-xs font-medium flex items-center gap-1.5 transition-colors",
+                      view === "block" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted"
+                    )}
+                  >
+                    <LayoutGrid className="w-3.5 h-3.5" /> Block view
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setView("list")}
+                    className={cn(
+                      "px-3 h-9 text-xs font-medium flex items-center gap-1.5 border-l border-border transition-colors",
+                      view === "list" ? "bg-primary text-primary-foreground" : "bg-card text-foreground hover:bg-muted"
+                    )}
+                  >
+                    <ListIcon className="w-3.5 h-3.5" /> List view
+                  </button>
+                </div>
+                <Button size="sm" onClick={() => openNewAppt(null)}>
+                  <CalendarPlus className="w-4 h-4 mr-1.5" /> Add Appt
+                </Button>
                 <Button variant="outline" size="sm"><Eye className="w-4 h-4 mr-1.5" /> Snapview</Button>
                 <Button variant="outline" size="sm"><Printer className="w-4 h-4 mr-1.5" /> Print</Button>
                 <Dialog open={blockOpen} onOpenChange={setBlockOpen}>
@@ -304,7 +350,8 @@ export default function AppointmentBook() {
             </div>
           </div>
 
-          {/* ── Calendar grid ── */}
+          {/* ── Calendar grid (block view) ── */}
+          {view === "block" && (
           <div className="mt-4 bg-card border border-border rounded-xl shadow-sm overflow-hidden">
             {/* Header row */}
             <div
@@ -338,6 +385,13 @@ export default function AppointmentBook() {
                   t={t}
                   rowIdx={rowIdx}
                   visibleSides={visibleSides}
+                  onCellClick={(sideId, startMin) =>
+                    openNewAppt({
+                      sideId,
+                      start: `${String(Math.floor(startMin / 60)).padStart(2, "0")}:${String(startMin % 60).padStart(2, "0")}`,
+                      end: `${String(Math.floor((startMin + 30) / 60)).padStart(2, "0")}:${String((startMin + 30) % 60).padStart(2, "0")}`,
+                    })
+                  }
                 />
               ))}
 
@@ -352,6 +406,7 @@ export default function AppointmentBook() {
                     return (
                       <div
                         key={a.id}
+                        onClick={() => openNewAppt({ existing: a })}
                         className={cn(
                           "absolute rounded-md p-1.5 text-[11px] overflow-hidden shadow-sm hover:shadow-md transition cursor-pointer",
                           statusStyle[a.status]
@@ -401,11 +456,79 @@ export default function AppointmentBook() {
               )}
             </div>
           </div>
+          )}
+
+          {/* ── List view ── */}
+          {view === "list" && (
+            <div className="mt-4 bg-card rounded-xl border border-border shadow-sm overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr className="border-b border-border bg-muted/40">
+                      <th className="text-left px-4 py-3 font-medium text-muted-foreground">Time</th>
+                      <th className="text-left px-4 py-3 font-medium text-muted-foreground">Patient</th>
+                      <th className="text-left px-4 py-3 font-medium text-muted-foreground">Phone</th>
+                      <th className="text-left px-4 py-3 font-medium text-muted-foreground">DOB</th>
+                      <th className="text-left px-4 py-3 font-medium text-muted-foreground">Type</th>
+                      <th className="text-left px-4 py-3 font-medium text-muted-foreground">Side</th>
+                      <th className="text-left px-4 py-3 font-medium text-muted-foreground">Doctor</th>
+                      <th className="text-left px-4 py-3 font-medium text-muted-foreground">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {appointments
+                      .filter((a) => visibleSides.some((s) => s.id === a.sideId))
+                      .sort((a, b) => toMin(a.start) - toMin(b.start))
+                      .map((a) => {
+                        const side = sides.find((s) => s.id === a.sideId);
+                        return (
+                          <tr
+                            key={a.id}
+                            onClick={() => openNewAppt({ existing: a })}
+                            className="border-b border-border hover:bg-muted/30 cursor-pointer transition-colors"
+                          >
+                            <td className="px-4 py-3 font-medium text-foreground whitespace-nowrap">{fmt(toMin(a.start))} – {fmt(toMin(a.end))}</td>
+                            <td className="px-4 py-3 font-medium text-foreground">
+                              {a.patient} {a.plan && <span className="text-destructive text-xs ml-1">[{a.plan}]</span>}
+                            </td>
+                            <td className="px-4 py-3 text-muted-foreground">{a.phone}</td>
+                            <td className="px-4 py-3 text-muted-foreground">{a.dob}</td>
+                            <td className="px-4 py-3 text-foreground">{a.type}</td>
+                            <td className="px-4 py-3 text-muted-foreground">{side?.label}</td>
+                            <td className="px-4 py-3 text-muted-foreground">{doctorOfSide(a.sideId)}</td>
+                            <td className="px-4 py-3">
+                              <span className={cn("inline-flex items-center px-2 py-0.5 rounded-md text-xs font-medium capitalize", statusStyle[a.status])}>
+                                {a.status}
+                              </span>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                  </tbody>
+                </table>
+                {appointments.filter((a) => visibleSides.some((s) => s.id === a.sideId)).length === 0 && (
+                  <div className="py-12 text-center text-muted-foreground">No appointments found.</div>
+                )}
+              </div>
+            </div>
+          )}
 
           <p className="mt-3 text-xs text-muted-foreground">
             Showing {visibleSides.length} columns · {slots.length} slots ({SLOT}-min each) from{" "}
             {fmt(startM)} to {fmt(endM)}
           </p>
+
+          {/* Appointment dialog */}
+          <Dialog open={apptOpen} onOpenChange={setApptOpen}>
+            <AppointmentDialog
+              key={apptOpen ? "open" : "closed"}
+              sides={visibleSides}
+              doctors={doctors}
+              prefill={apptPrefill}
+              onSave={(a) => { saveAppt(a); setApptOpen(false); }}
+              onClose={() => setApptOpen(false)}
+            />
+          </Dialog>
         </main>
       </div>
     </div>
@@ -419,10 +542,12 @@ function RowCells({
   t,
   rowIdx,
   visibleSides,
+  onCellClick,
 }: {
   t: number;
   rowIdx: number;
   visibleSides: SideCol[];
+  onCellClick?: (sideId: string, startMin: number) => void;
 }) {
   const isHour = t % 60 === 0;
   return (
@@ -438,6 +563,7 @@ function RowCells({
       {visibleSides.map((s) => (
         <div
           key={s.id + t}
+          onClick={() => onCellClick?.(s.id, t)}
           className={cn(
             "border-r border-border hover:bg-primary/5 cursor-pointer transition-colors",
             isHour ? "border-t-2 border-t-border/60" : "border-t border-border/40"
@@ -453,6 +579,201 @@ function RowCells({
         {isHour && fmt(t)}
       </div>
     </>
+  );
+}
+
+/* ────────────────────────────────────────────── */
+/* Appointment dialog (Search patient → Save)     */
+/* ────────────────────────────────────────────── */
+type PatientRow = { id: string; name: string; phone: string; dob: string; insurance?: string };
+const mockPatients: PatientRow[] = [
+  { id: "p1", name: "JOHNSONN ELLA", phone: "484-903-7236", dob: "02-27-2012", insurance: "D" },
+  { id: "p2", name: "BRAKE ZOIEY", phone: "201-616-6586", dob: "08-28-2012", insurance: "M" },
+  { id: "p3", name: "MCNUTT PHEONIX", phone: "484-597-1934", dob: "02-19-2012", insurance: "M" },
+  { id: "p4", name: "DELGADO GENESIS", phone: "862-247-7212", dob: "03-03-2010", insurance: "M" },
+  { id: "p5", name: "BALSECA SAMUEL", phone: "201-552-0729", dob: "05-12-2009", insurance: "M" },
+  { id: "p6", name: "CURRY NEVAEH", phone: "484-554-6555", dob: "02-15-2005", insurance: "L.M" },
+];
+
+function AppointmentDialog({
+  sides,
+  doctors,
+  prefill,
+  onSave,
+  onClose,
+}: {
+  sides: SideCol[];
+  doctors: Doctor[];
+  prefill: { sideId?: string; start?: string; end?: string; existing?: Appointment } | null;
+  onSave: (a: Omit<Appointment, "id"> & { id?: string }) => void;
+  onClose: () => void;
+}) {
+  const existing = prefill?.existing;
+  const [step, setStep] = useState<"search" | "form">(existing ? "form" : "search");
+  const [query, setQuery] = useState("");
+  const [selected, setSelected] = useState<PatientRow | null>(
+    existing ? { id: "x", name: existing.patient, phone: existing.phone ?? "", dob: existing.dob ?? "", insurance: existing.plan } : null
+  );
+
+  const [sideId, setSideId] = useState(existing?.sideId ?? prefill?.sideId ?? sides[0]?.id ?? "");
+  const [start, setStart] = useState(existing?.start ?? prefill?.start ?? "09:00");
+  const [end, setEnd] = useState(existing?.end ?? prefill?.end ?? "09:30");
+  const [type, setType] = useState(existing?.type ?? "");
+  const [status, setStatus] = useState<Appointment["status"]>(existing?.status ?? "confirmed");
+
+  const results = mockPatients.filter(
+    (p) =>
+      !query ||
+      p.name.toLowerCase().includes(query.toLowerCase()) ||
+      p.phone.includes(query) ||
+      p.dob.includes(query)
+  );
+
+  const pickPatient = (p: PatientRow) => {
+    setSelected(p);
+    setStep("form");
+  };
+
+  return (
+    <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+      <DialogHeader>
+        <DialogTitle className="flex items-center gap-2">
+          <CalendarPlus className="w-5 h-5 text-primary" />
+          {existing ? "Edit Appointment" : step === "search" ? "Add Appointment · Find Patient" : "Add Appointment · Details"}
+        </DialogTitle>
+        <DialogDescription>
+          {step === "search"
+            ? "Search for an existing patient before creating the appointment."
+            : "Fill in appointment information and save."}
+        </DialogDescription>
+      </DialogHeader>
+
+      {step === "search" && (
+        <div className="space-y-3">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+            <Input
+              autoFocus
+              placeholder="Search by name, phone, or DOB…"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <div className="border border-border rounded-lg overflow-hidden max-h-72 overflow-y-auto">
+            <table className="w-full text-sm">
+              <thead className="bg-muted/40 sticky top-0">
+                <tr>
+                  <th className="text-left px-3 py-2 font-medium text-muted-foreground">Patient</th>
+                  <th className="text-left px-3 py-2 font-medium text-muted-foreground">Phone</th>
+                  <th className="text-left px-3 py-2 font-medium text-muted-foreground">DOB</th>
+                  <th className="text-left px-3 py-2 font-medium text-muted-foreground">Ins.</th>
+                </tr>
+              </thead>
+              <tbody>
+                {results.map((p) => (
+                  <tr
+                    key={p.id}
+                    onClick={() => pickPatient(p)}
+                    className="border-t border-border hover:bg-primary/5 cursor-pointer"
+                  >
+                    <td className="px-3 py-2 font-medium text-foreground">{p.name}</td>
+                    <td className="px-3 py-2 text-muted-foreground">{p.phone}</td>
+                    <td className="px-3 py-2 text-muted-foreground">{p.dob}</td>
+                    <td className="px-3 py-2 text-destructive font-semibold">[{p.insurance}]</td>
+                  </tr>
+                ))}
+                {results.length === 0 && (
+                  <tr><td colSpan={4} className="text-center py-6 text-muted-foreground">No patients found.</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
+          <div className="flex items-center justify-between pt-1">
+            <Button variant="outline" size="sm" onClick={() => pickPatient({ id: "new", name: query || "NEW PATIENT", phone: "", dob: "", insurance: "M" })}>
+              <UserPlus className="w-4 h-4 mr-1.5" /> Use as new patient
+            </Button>
+            <Button variant="ghost" size="sm" onClick={onClose}>Cancel</Button>
+          </div>
+        </div>
+      )}
+
+      {step === "form" && selected && (
+        <div className="space-y-4">
+          <div className="rounded-lg border border-border bg-muted/40 p-3 flex items-center justify-between">
+            <div>
+              <div className="font-semibold text-foreground">{selected.name} {selected.insurance && <span className="text-destructive text-xs ml-1">[{selected.insurance}]</span>}</div>
+              <div className="text-xs text-muted-foreground">{selected.phone} · DOB {selected.dob || "—"}</div>
+            </div>
+            {!existing && (
+              <Button variant="ghost" size="sm" onClick={() => setStep("search")}>Change</Button>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <Label className="text-xs">Side / Operatory</Label>
+              <Select value={sideId} onValueChange={setSideId}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  {sides.map((s) => (
+                    <SelectItem key={s.id} value={s.id}>
+                      {s.label} · {doctors.find((d) => d.id === s.doctorId)?.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-xs">Status</Label>
+              <Select value={status} onValueChange={(v) => setStatus(v as Appointment["status"])}>
+                <SelectTrigger><SelectValue /></SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="confirmed">Confirmed</SelectItem>
+                  <SelectItem value="allocated">Allocated</SelectItem>
+                  <SelectItem value="message">Left Message</SelectItem>
+                  <SelectItem value="not-available">Not Available</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div>
+              <Label className="text-xs">Start</Label>
+              <Input type="time" value={start} onChange={(e) => setStart(e.target.value)} />
+            </div>
+            <div>
+              <Label className="text-xs">End</Label>
+              <Input type="time" value={end} onChange={(e) => setEnd(e.target.value)} />
+            </div>
+            <div className="col-span-2">
+              <Label className="text-xs">Appointment Type</Label>
+              <Input value={type} onChange={(e) => setType(e.target.value)} placeholder="e.g. EVAL, AWC, NEW PATIENT" />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button variant="outline" onClick={onClose}>Cancel</Button>
+            <Button
+              onClick={() =>
+                onSave({
+                  id: existing?.id,
+                  sideId,
+                  start,
+                  end,
+                  patient: selected.name,
+                  type: type || "APPT",
+                  status,
+                  plan: (selected.insurance as Appointment["plan"]) ?? undefined,
+                  phone: selected.phone,
+                  dob: selected.dob,
+                })
+              }
+            >
+              <CalendarPlus className="w-4 h-4 mr-1.5" /> {existing ? "Update" : "Save Appointment"}
+            </Button>
+          </DialogFooter>
+        </div>
+      )}
+    </DialogContent>
   );
 }
 
