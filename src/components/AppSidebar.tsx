@@ -10,6 +10,8 @@ import {
   FileSignature,
   BarChart3,
   Clipboard,
+  Users,
+  Wrench,
   Menu,
   ChevronLeft,
 } from "lucide-react";
@@ -19,12 +21,14 @@ import logoAsset from "@/assets/dentalens-logo.png.asset.json";
 const menuItems = [
   { title: "Dashboard", icon: LayoutDashboard, url: "/dashboard" },
   { title: "Appointment", icon: Building2, url: "/appointment/book" },
+  { title: "Patient", icon: Users, url: "/patients" },
   { title: "Accounts", icon: Clipboard, url: "/patient/billing" },
   { title: "Treatment Plan", icon: ClipboardList, url: "/treatment-plan" },
   { title: "Chart", icon: Stethoscope, url: "/chart" },
   { title: "Imaging", icon: Scan, url: "/imaging" },
   { title: "Electronic Form", icon: FileSignature, url: "/electronic-form" },
   { title: "Report", icon: BarChart3, url: "/report" },
+  { title: "Practice Setup", icon: Wrench, url: "/practice-setup" },
   { title: "Setting", icon: Settings, url: "/settings" },
 ];
 
@@ -64,7 +68,9 @@ export function AppSidebar({ collapsed, onToggle }: AppSidebarProps) {
       {/* Navigation */}
       <nav className="flex-1 py-2 overflow-y-auto">
         {menuItems.map((item) => {
-          const isActive = location.pathname === item.url;
+          const isActive =
+            location.pathname === item.url ||
+            (item.url !== "/" && location.pathname.startsWith(item.url + "/"));
           return (
             <NavLink
               key={item.title}

@@ -11,6 +11,8 @@ import AppointmentBook from "./pages/AppointmentBook";
 import Appointment from "./pages/Appointment";
 import OneScreen from "./pages/OneScreen";
 import PatientBilling from "./pages/PatientBilling";
+import Patients from "./pages/Patients";
+import PracticeSetup from "./pages/PracticeSetup";
 import Settings from "./pages/Settings";
 import TreatmentPlan from "./pages/TreatmentPlan";
 import Chart from "./pages/Chart";
@@ -34,7 +36,9 @@ const App = () => (
             <Route path="/appointment/book" element={<AppointmentBook />} />
             <Route path="/appointment" element={<Appointment />} />
             <Route path="/onescreen" element={<OneScreen />} />
+            <Route path="/patients" element={<Patients />} />
             <Route path="/patient/billing" element={<PatientBilling />} />
+            <Route path="/practice-setup/*" element={<PracticeSetup />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/treatment-plan" element={<TreatmentPlan />} />
             <Route path="/chart" element={<Chart />} />

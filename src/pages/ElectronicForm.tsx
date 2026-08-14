@@ -1,14 +1,32 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { AppSidebar } from "@/components/AppSidebar";
 import { Header } from "@/components/Header";
 import { Breadcrumb } from "@/components/Breadcrumb";
-import { FileSignature, Plus, Search, Send, Clock, CheckCircle, Eye } from "lucide-react";
+import { DataTableToolbar } from "@/components/data-table/DataTableToolbar";
+import { SortableHeader } from "@/components/data-table/SortableHeader";
+import { ColumnFilterRow } from "@/components/data-table/ColumnFilterRow";
+import { useDataTable, type DataTableColumn } from "@/hooks/useDataTable";
+import { exportToCsv, exportToPdf } from "@/lib/table-export";
+import { Plus, Send, Clock, CheckCircle, Eye } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
-const forms = [
+type FormRow = {
+  id: number;
+  name: string;
+  type: string;
+  patient: string;
+  status: "signed" | "pending";
+  sent: string;
+  sentSort: string;
+  signed: string | null;
+};
+
+type FormKey = "name" | "type" | "patient" | "sent" | "signed" | "status";
+
+const forms: FormRow[] = [
   {
     id: 1,
     name: "Patient Consent Form",
@@ -16,6 +34,7 @@ const forms = [
     patient: "Sarah Johnson",
     status: "signed",
     sent: "May 20, 2026",
+    sentSort: "2026-05-20",
     signed: "May 20, 2026",
   },
   {
@@ -25,6 +44,7 @@ const forms = [
     patient: "Michael Chen",
     status: "pending",
     sent: "May 18, 2026",
+    sentSort: "2026-05-18",
     signed: null,
   },
   {
@@ -34,6 +54,7 @@ const forms = [
     patient: "Emily Davis",
     status: "signed",
     sent: "May 15, 2026",
+    sentSort: "2026-05-15",
     signed: "May 15, 2026",
   },
   {
@@ -43,6 +64,7 @@ const forms = [
     patient: "Robert Wilson",
     status: "pending",
     sent: "May 12, 2026",
+    sentSort: "2026-05-12",
     signed: null,
   },
   {
@@ -52,25 +74,75 @@ const forms = [
     patient: "Lisa Anderson",
     status: "signed",
     sent: "May 10, 2026",
+    sentSort: "2026-05-10",
     signed: "May 11, 2026",
   },
 ];
 
+const formColumns: DataTableColumn<FormRow, FormKey>[] = [
+  { key: "name", label: "Form", getText: (r) => r.name, getSortValue: (r) => r.name },
+  {
+    key: "type",
+    label: "Type",
+    type: "select",
+    options: [
+      { label: "Consent", value: "Consent" },
+      { label: "History", value: "History" },
+      { label: "Compliance", value: "Compliance" },
+      { label: "Insurance", value: "Insurance" },
+    ],
+    getText: (r) => r.type,
+    getSortValue: (r) => r.type,
+  },
+  { key: "patient", label: "Patient", getText: (r) => r.patient, getSortValue: (r) => r.patient },
+  { key: "sent", label: "Sent", getText: (r) => r.sent, getSortValue: (r) => r.sentSort },
+  {
+    key: "signed",
+    label: "Signed",
+    getText: (r) => r.signed ?? "",
+    getSortValue: (r) => r.signed ?? "",
+  },
+  {
+    key: "status",
+    label: "Status",
+    type: "select",
+    options: [
+      { label: "Signed", value: "signed" },
+      { label: "Pending", value: "pending" },
+    ],
+    getText: (r) => r.status,
+    getSortValue: (r) => r.status,
+  },
+];
+
+const exportColumns = [
+  { header: "Form", value: (r: FormRow) => r.name },
+  { header: "Type", value: (r: FormRow) => r.type },
+  { header: "Patient", value: (r: FormRow) => r.patient },
+  { header: "Sent", value: (r: FormRow) => r.sent },
+  { header: "Signed", value: (r: FormRow) => r.signed ?? "" },
+  { header: "Status", value: (r: FormRow) => r.status },
+];
+
 export default function ElectronicForm() {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [search, setSearch] = useState("");
+  const columns = useMemo(() => formColumns, []);
+  const table = useDataTable({
+    data: forms,
+    columns,
+    initialSortKey: "sent",
+    initialSortDir: "desc",
+  });
 
-  const filtered = forms.filter(
-    (f) =>
-      f.name.toLowerCase().includes(search.toLowerCase()) ||
-      f.patient.toLowerCase().includes(search.toLowerCase()) ||
-      f.type.toLowerCase().includes(search.toLowerCase())
-  );
+  const handleExportCsv = () => {
+    exportToCsv("electronic-forms", exportColumns, table.filtered);
+    toast.success(`Exported ${table.filtered.length} form(s) as CSV`);
+  };
 
-  const breadcrumbItems = [
-    { label: "Dashboard", href: "/dashboard" },
-    { label: "Electronic Form" },
-  ];
+  const handleExportPdf = () => {
+    exportToPdf("electronic-forms", "Electronic Forms", exportColumns, table.filtered);
+    toast.success(`Exported ${table.filtered.length} form(s) as PDF`);
+  };
 
   return (
     <div className="min-h-screen flex w-full bg-background">
@@ -80,16 +152,28 @@ export default function ElectronicForm() {
         <Header />
 
         <main className="flex-1 p-6 overflow-auto">
-          <Breadcrumb items={breadcrumbItems} />
+          <Breadcrumb items={[{ label: "Dashboard", href: "/dashboard" }, { label: "Electronic Form" }]} />
 
           <div className="mt-6 space-y-6">
-            {/* Page header */}
-            <div className="flex items-center justify-between">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div>
                 <h1 className="text-2xl font-bold text-foreground">Electronic Forms</h1>
-                <p className="text-sm text-muted-foreground mt-1">Send, track, and manage digital patient forms</p>
+                <p className="text-sm text-muted-foreground mt-1">
+                  Showing {table.filtered.length} of {table.total} records
+                </p>
               </div>
-              <div className="flex items-center gap-2">
+
+              <DataTableToolbar
+                search={table.search}
+                onSearchChange={table.setSearch}
+                searchPlaceholder="Search by form, patient, or type..."
+                showFilters={table.showFilters}
+                onToggleFilters={() => table.setShowFilters((v) => !v)}
+                onRefresh={table.resetFilters}
+                onExportCsv={handleExportCsv}
+                onExportPdf={handleExportPdf}
+                exportDisabled={table.filtered.length === 0}
+              >
                 <Button variant="outline" className="gap-2">
                   <Plus className="w-4 h-4" />
                   Template
@@ -98,38 +182,44 @@ export default function ElectronicForm() {
                   <Send className="w-4 h-4" />
                   Send Form
                 </Button>
-              </div>
+              </DataTableToolbar>
             </div>
 
-            {/* Search */}
-            <div className="relative max-w-md">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Search by form, patient, or type..."
-                className="pl-10"
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-
-            {/* Forms table */}
             <div className="bg-card rounded-xl border border-border shadow-sm overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-sm">
                   <thead>
                     <tr className="border-b border-border bg-muted/40">
-                      <th className="text-left px-4 py-3 font-medium text-muted-foreground">Form</th>
-                      <th className="text-left px-4 py-3 font-medium text-muted-foreground">Type</th>
-                      <th className="text-left px-4 py-3 font-medium text-muted-foreground">Patient</th>
-                      <th className="text-left px-4 py-3 font-medium text-muted-foreground">Sent</th>
-                      <th className="text-left px-4 py-3 font-medium text-muted-foreground">Signed</th>
-                      <th className="text-left px-4 py-3 font-medium text-muted-foreground">Status</th>
+                      {columns.map((col) => (
+                        <SortableHeader
+                          key={col.key}
+                          label={col.label}
+                          columnKey={col.key}
+                          sortKey={table.sortKey}
+                          sortDir={table.sortDir}
+                          onSort={table.handleSort}
+                        />
+                      ))}
                       <th className="text-left px-4 py-3 font-medium text-muted-foreground">Action</th>
                     </tr>
+                    {table.showFilters && (
+                      <ColumnFilterRow
+                        columns={table.filterColumns}
+                        values={table.columnFilters}
+                        onChange={table.updateColumnFilter}
+                        trailingEmptyCells={1}
+                      />
+                    )}
                   </thead>
                   <tbody>
-                    {filtered.map((form) => (
-                      <tr key={form.id} className="border-b border-border hover:bg-muted/30 transition-colors">
+                    {table.filtered.map((form, index) => (
+                      <tr
+                        key={form.id}
+                        className={cn(
+                          "border-b border-border hover:bg-muted/30 transition-colors",
+                          index % 2 === 1 && "bg-muted/15"
+                        )}
+                      >
                         <td className="px-4 py-3 font-medium text-foreground">{form.name}</td>
                         <td className="px-4 py-3">
                           <Badge variant="outline" className="text-xs bg-secondary text-secondary-foreground">
@@ -163,7 +253,7 @@ export default function ElectronicForm() {
                   </tbody>
                 </table>
               </div>
-              {filtered.length === 0 && (
+              {table.filtered.length === 0 && (
                 <div className="py-12 text-center text-muted-foreground">No forms found.</div>
               )}
             </div>
